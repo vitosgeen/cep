@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * @file
+ * Contains cep_query.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function cep_query_preprocess_html(&$variables) {
+
+  // $ip = \Drupal::service('cep_query.cep_query_service_job')->startServiceJob();
+  // dsm($ip);
+}
+/**
+ * Implements hook_help().
+ */
+function cep_query_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the cep_query module.
+    case 'help.page.cep_query':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Cep Query Managment url queries cross cep proxy. Use make query with proxy ip') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cep_query_theme() {
+  $theme = [];
+  $theme['cep_query'] = [
+    'render element' => 'elements',
+    'file' => 'cep_query.page.inc',
+    'template' => 'cep_query',
+  ];
+  $theme['cep_query_content_add_list'] = [
+    'render element' => 'content',
+    'variables' => ['content' => NULL],
+    'file' => 'cep_query.page.inc',
+  ];
+  return $theme;
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+function cep_query_theme_suggestions_cep_query(array $variables) {
+  $suggestions = [];
+  $entity = $variables['elements']['#cep_query'];
+  $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
+
+  $suggestions[] = 'cep_query__' . $sanitized_view_mode;
+  $suggestions[] = 'cep_query__' . $entity->bundle();
+  $suggestions[] = 'cep_query__' . $entity->bundle() . '__' . $sanitized_view_mode;
+  $suggestions[] = 'cep_query__' . $entity->id();
+  $suggestions[] = 'cep_query__' . $entity->id() . '__' . $sanitized_view_mode;
+  return $suggestions;
+}
+
+/**
+* Implements hook_form_alter().
+*/
+function cep_query_form_alter(&$form, &$form_state, $form_id) {
+
+}
+
+function ajax_forms_cep_query_url_form_callback(&$form, FormStateInterface $form_state){
+  \Drupal::messenger()
+  ->addStatus("ajax_forms_test_validation_form_callback invoked");
+}

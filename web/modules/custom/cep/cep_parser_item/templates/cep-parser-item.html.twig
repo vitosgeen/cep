@@ -1,0 +1,21 @@
+{#
+/**
+ * @file
+ * Default theme implementation to present a cep_parser_item entity.
+ *
+ * This template is used when viewing a registered cep_parser_item's page,
+ * e.g., /admin/content/cep-parser-item)/123. 123 being the cep_parser_item's ID.
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ *   print a subset such as 'content.title'.
+ * - attributes: HTML attributes for the container element.
+ *
+ * @see template_preprocess_cep_parser_item()
+ */
+#}
+<article{{ attributes }}>
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+</article>

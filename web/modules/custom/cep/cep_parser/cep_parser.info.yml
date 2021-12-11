@@ -1,0 +1,6 @@
+name: Cep Parser
+type: module
+description: 'Provides a cep_parser entity.'
+package: CEP
+core_version_requirement: ^8 || ^9
+configure: entity.cep_parser.settings

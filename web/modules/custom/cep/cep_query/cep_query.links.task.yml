@@ -1,0 +1,17 @@
+# Cep query routing definition
+
+entity.cep_query.canonical:
+  route_name: entity.cep_query.canonical
+  base_route: entity.cep_query.canonical
+  title: 'View'
+
+entity.cep_query.edit_form:
+  route_name: entity.cep_query.edit_form
+  base_route: entity.cep_query.canonical
+  title: 'Edit'
+
+entity.cep_query.delete_form:
+  route_name:  entity.cep_query.delete_form
+  base_route:  entity.cep_query.canonical
+  title: Delete
+  weight: 10

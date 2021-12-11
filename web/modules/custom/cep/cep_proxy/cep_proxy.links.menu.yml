@@ -1,0 +1,24 @@
+
+# CEP proxy type menu items definition
+entity.cep_proxy_type.collection:
+  title: 'CEP proxy type'
+  route_name: entity.cep_proxy_type.collection
+  description: 'List CEP proxy type (bundles)'
+  parent: system.admin_structure
+  weight: 99
+
+# CEP proxy menu items definition
+entity.cep_proxy.collection:
+  title: 'CEP proxy list'
+  route_name: entity.cep_proxy.collection
+  description: 'List CEP proxy entities'
+  parent: entity.cep_proxy_type.collection
+  weight: 100
+
+# CEP proxy type menu items definition
+entity.cep_proxy.add_list:
+  title: 'CEP proxy entity  add list'
+  description: 'Configure CEP proxy entity entities'
+  route_name: entity.cep_proxy.add_list
+  parent: entity.cep_proxy.collection
+  weight: 100

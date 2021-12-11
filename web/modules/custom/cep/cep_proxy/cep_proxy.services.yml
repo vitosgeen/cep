@@ -1,0 +1,3 @@
+services:
+  cep_proxy.cep_proxy_service:
+    class: Drupal\cep_proxy\Services\CepProxyService

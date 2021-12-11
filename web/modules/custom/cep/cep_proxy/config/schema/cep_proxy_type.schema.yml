@@ -1,0 +1,15 @@
+cep_proxy.cep_proxy_type.*:
+  type: config_entity
+  label: 'CEP proxy type config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    url:
+      type: string
+      label: 'url'
+    uuid:
+      type: string

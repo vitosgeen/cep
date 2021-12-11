@@ -1,0 +1,7 @@
+services:
+  cep_query.cep_query_service:
+    class: Drupal\cep_query\Services\CepQueryService
+  cep_query.cep_query_service_job:
+    class: Drupal\cep_query\Services\CepQueryServiceJob
+  cep_query.cep_query_service_job_curl:
+    class: Drupal\cep_query\Services\CepQueryServiceJobCurl

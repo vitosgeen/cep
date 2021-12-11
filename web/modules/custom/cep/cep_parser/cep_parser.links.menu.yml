@@ -1,0 +1,10 @@
+entity.cep_parser.settings:
+  title: cep_parser
+  description: Configure a cep_parser entity type
+  route_name:  entity.cep_parser.settings
+  parent: system.admin_structure
+entity.cep_parser.collection:
+  title: cep_parsers
+  description: List of cep_parsers
+  route_name: entity.cep_parser.collection
+  parent: system.admin_content

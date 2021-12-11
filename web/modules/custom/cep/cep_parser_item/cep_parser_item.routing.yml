@@ -1,0 +1,37 @@
+entity.cep_parser_item.settings:
+  path: 'admin/structure/cep-parser-item'
+  defaults:
+    _form: '\Drupal\cep_parser_item\Form\CepParserItemSettingsForm'
+    _title: 'Cep Parser Item'
+  requirements:
+    _permission: 'administer cep_parser_item'
+
+entity.cep_parser_item.create:
+  path: '/cep_parser_item/create'
+  defaults:
+    _title: 'Create'
+    _controller: '\Drupal\cep_parser_item\Controller\ParserItemController::createAction'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: TRUE
+
+entity.cep_parser_item.process:
+  path: '/cep_parser_item/process'
+  defaults:
+    _title: 'Process Parser'
+    _controller: '\Drupal\cep_parser_item\Controller\ParserItemController::processParser'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: TRUE
+
+entity.cep_parser_item.retrieving:
+  path: '/cep_parser_item/retrieving'
+  defaults:
+    _title: 'Retrieving query'
+    _controller: '\Drupal\cep_parser_item\Controller\ParserItemController::retrievingContentAction'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: TRUE

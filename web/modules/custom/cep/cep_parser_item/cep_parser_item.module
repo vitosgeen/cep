@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * @file
+ * Provides a cep_parser_item entity type.
+ */
+
+use Drupal\Core\Render\Element;
+
+/**
+ * Implements hook_theme().
+ */
+function cep_parser_item_theme() {
+  return [
+    'cep_parser_item' => [
+      'render element' => 'elements',
+    ],
+  ];
+}
+
+/**
+ * Prepares variables for cep_parser_item templates.
+ *
+ * Default template: cep-parser-item.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the cep_parser_item information and any
+ *     fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_cep_parser_item(array &$variables) {
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * Controls work parser.
+ */
+function cep_parser_item_cron() {
+  
+}
+
+/**
+ * Get free parser for work.
+ */
+function cep_parser_item_cron_get_start() {
+  
+
+  
+}

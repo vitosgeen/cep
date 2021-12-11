@@ -1,0 +1,10 @@
+entity.cep_proxy.add_form:
+  route_name: entity.cep_proxy.add_page
+  title: 'Add CEP proxy'
+  appears_on:
+    - entity.cep_proxy.collection
+entity.cep_proxy_type.add_form:
+  route_name: entity.cep_proxy_type.add_form
+  title: 'Add CEP proxy type'
+  appears_on:
+    - entity.cep_proxy_type.collection

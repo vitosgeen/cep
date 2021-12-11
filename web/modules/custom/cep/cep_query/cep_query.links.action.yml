@@ -1,0 +1,10 @@
+entity.cep_query.add_form:
+  route_name: entity.cep_query.add_page
+  title: 'Add Cep query'
+  appears_on:
+    - entity.cep_query.collection
+entity.cep_query_type.add_form:
+  route_name: entity.cep_query_type.add_form
+  title: 'Add Cep query type'
+  appears_on:
+    - entity.cep_query_type.collection

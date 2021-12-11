@@ -1,0 +1,125 @@
+<?php
+
+/**
+ * @file
+ * Contains cep_proxy.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\cep_proxy\Entity\CepProxy;
+use Drupal\cep_parser\Entity\CepParser;
+use Drupal\cep_query\Entity\CepQuery;
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function cep_proxy_preprocess_html(&$variables) {
+
+    // $service = \Drupal::service('cep_parser.cep_parser_service');
+    // $service->setReadyParserForWork();
+
+    // $busyParser = $service->getBusyParser();
+    // if (!$busyParser) {
+    //   $readyParser = $service->getReadyParser();
+    //   $service->setBusyParser($readyParser->id());
+    // }
+
+    // dsm($busyParser->id());
+
+    // if ($busyParser) {
+      // $serviceItemParser = \Drupal::service('cep_parser_item.cep_parser_item_service');
+      // $parserItem = $serviceItemParser->buildEntityParserItem($busyParser);
+      // // $serviceItemParser = \Drupal::service('cep_parser_item.cep_parser_item_service');
+      // dsm($parserItem->id());
+      // $cep_query_entity = \Drupal::entityTypeManager()->getStorage('cep_query');
+      // $cep_query = $cep_query_entity->loadByProperties(['url' => $parserItem->field_url_parser[0]->uri]);
+      // dsm($parserItem->field_url_parser[0]->uri);
+      // if (empty($cep_query)) {
+        // $entityCepQuery = CepQuery::create();
+        // dsm($entityCepQuery);
+        // $entityCepQuery->title->value = $parserItem->field_url_parser[0]->uri;
+        // $entityCepQuery->proxy_type->value = $parserItem->field_url_parser[0]->uri;
+      // }
+      // dsm($cep_query);
+
+      // $entity->title->value = $dataEntity['field_url_parser'];
+      // $entity->field_hash->value = $hash;
+      // $entity->field_parser->target_id = $dataEntity['field_parser'];
+      // $entity->field_url_parser = [
+      //   "uri" => $dataEntity['field_url_parser'],
+      //   "title" => $dataEntity['field_url_parser'],
+      //   "options" => [],
+      // ];
+      // $entity->save();
+    // $cepQueryEntity = CepQuery::load($id);
+      // $service_proxy = \Drupal::service('cep_proxy.cep_proxy_service');
+      // $x = $service_proxy->getFreeProxy();
+      // dsm($x);
+    // }
+    // dsm($x->id());
+    // dsm($x->uuid());
+    // dsm($x->title->value);
+    // dsm($x->field_data_parser->value);
+    // dsm($x->field_parser_status->value);
+    // $service = \Drupal::service('cep_proxy.cep_proxy_service');
+    // $x = $service->getFreeProxy();
+    // var_dump($x);
+    // $ids = \Drupal::service('cep_query.cep_query_service')->getQuery();
+    // dpm($ids);
+    // $types = \Drupal::service('cep_proxy.cep_proxy_service')->getTypesProxy();
+    // dpm($types);
+    // \Drupal::service('cep_proxy.cep_proxy_service')->setStatusIpProxy($ip, CepProxy::BUSY);
+    // sleep(30);
+    // \Drupal::service('cep_proxy.cep_proxy_service')->setStatusIpProxy($ip, CepProxy::FREE);
+    // drupal_set_message($random_message);
+}
+
+/**
+ * Implements hook_help().
+ */
+function cep_proxy_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the cep_proxy module.
+    case 'help.page.cep_proxy':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Retrieve list ip from external sources and provides access to ip') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cep_proxy_theme() {
+  $theme = [];
+  $theme['cep_proxy'] = [
+    'render element' => 'elements',
+    'file' => 'cep_proxy.page.inc',
+    'template' => 'cep_proxy',
+  ];
+  $theme['cep_proxy_content_add_list'] = [
+    'render element' => 'content',
+    'variables' => ['content' => NULL],
+    'file' => 'cep_proxy.page.inc',
+  ];
+  return $theme;
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+function cep_proxy_theme_suggestions_cep_proxy(array $variables) {
+  $suggestions = [];
+  $entity = $variables['elements']['#cep_proxy'];
+  $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
+
+  $suggestions[] = 'cep_proxy__' . $sanitized_view_mode;
+  $suggestions[] = 'cep_proxy__' . $entity->bundle();
+  $suggestions[] = 'cep_proxy__' . $entity->bundle() . '__' . $sanitized_view_mode;
+  $suggestions[] = 'cep_proxy__' . $entity->id();
+  $suggestions[] = 'cep_proxy__' . $entity->id() . '__' . $sanitized_view_mode;
+  return $suggestions;
+}

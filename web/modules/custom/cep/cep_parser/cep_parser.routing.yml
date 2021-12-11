@@ -1,0 +1,14 @@
+entity.cep_parser.settings:
+  path: 'admin/structure/cep-parser'
+  defaults:
+    _form: '\Drupal\cep_parser\Form\CepParserSettingsForm'
+    _title: 'cep_parser'
+  requirements:
+    _permission: 'administer cep_parser'
+entity.cep_parser.add:
+  path: 'admin/structure/cep-parser-add'
+  defaults:
+    _form: '\Drupal\cep_parser\Form\CepParserForm'
+    _title: 'cep_parser'
+  requirements:
+    _permission: 'administer cep_parser'

@@ -1,0 +1,7 @@
+entity.cep_query.type:
+  path: '/admin/cep/cep_query/type'
+  defaults:
+    _form: '\Drupal\cep_proxy\Form\CepQueryTypeForm'
+    _title: 'CEP query type'
+  requirements:
+    _permission: 'access content'

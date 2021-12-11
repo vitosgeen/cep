@@ -1,0 +1,5 @@
+name: 'Cep Query'
+type: module
+core_version_requirement: ^8.8.0 || ^9.0
+description: 'Cep Query Management url queries cross cep proxy. Use make query with proxy ip'
+package: 'CEP'

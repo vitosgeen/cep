@@ -1,0 +1,22 @@
+{#
+/**
+ * @file cep_proxy.html.twig
+ * Default theme implementation to present CEP proxy data.
+ *
+ * This template is used when viewing CEP proxy pages.
+ *
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ * - attributes: HTML attributes for the container element.
+ *
+ * @see template_preprocess_cep_proxy()
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes.addClass('cep_proxy') }}>
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+</div>

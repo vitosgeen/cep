@@ -1,0 +1,10 @@
+name: 'CEP'
+type: module
+core_version_requirement: ^8.8.0 || ^9.0
+description: 'CEP - custom engine parser websites'
+package: 'CEP'
+dependencies:
+  - cep_parser
+  - cep_parser_item
+  - cep_query
+  - cep_proxy

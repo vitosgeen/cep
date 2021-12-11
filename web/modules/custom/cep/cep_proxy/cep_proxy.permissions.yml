@@ -1,0 +1,20 @@
+add cep proxy entities:
+  title: 'Create new CEP proxy entities'
+
+administer cep proxy entities:
+  title: 'Administer CEP proxy entities'
+  description: 'Allow to access the administration form to configure CEP proxy entities.'
+  restrict access: true
+
+delete cep proxy entities:
+  title: 'Delete CEP proxy entities'
+
+edit cep proxy entities:
+  title: 'Edit CEP proxy entities'
+
+view published cep proxy entities:
+  title: 'View published CEP proxy entities'
+
+view unpublished cep proxy entities:
+  title: 'View unpublished CEP proxy entities'
+

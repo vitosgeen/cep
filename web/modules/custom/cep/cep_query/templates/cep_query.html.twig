@@ -1,0 +1,22 @@
+{#
+/**
+ * @file cep_query.html.twig
+ * Default theme implementation to present Cep query data.
+ *
+ * This template is used when viewing Cep query pages.
+ *
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ * - attributes: HTML attributes for the container element.
+ *
+ * @see template_preprocess_cep_query()
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes.addClass('cep_query') }}>
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+</div>

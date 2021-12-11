@@ -1,0 +1,3 @@
+services:
+  cep_parser.cep_parser_service:
+    class: Drupal\cep_parser\Services\CepParserService

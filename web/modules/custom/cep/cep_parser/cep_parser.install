@@ -1,0 +1,38 @@
+<?php
+
+use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\Core\Entity\EntityChangedTrait;
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\cep_parser\CepParserInterface;
+use Drupal\user\UserInterface;
+/**
+ * Implements hook_update_8003().
+ */
+function cep_parser_update_8004() {
+    // \Drupal::entityDefinitionUpdateManager()->applyUpdates();    
+    $field_parser = BaseFieldDefinition::create('entity_reference')
+    ->setLabel(t('Parser parent'))
+    ->setDescription(t('The parser ID of the cep_parser parent.'))
+    ->setSetting('target_type', 'cep_parser')
+    ->setDisplayOptions('form', [
+      'type' => 'entity_reference_autocomplete',
+      'settings' => [
+        'match_operator' => 'CONTAINS',
+        'size' => 60,
+        'placeholder' => '',
+      ],
+      'weight' => 15,
+    ])
+    ->setDisplayConfigurable('form', TRUE)
+    ->setDisplayOptions('view', [
+      'label' => 'above',
+      'type' => 'author',
+      'weight' => 15,
+    ])
+    ->setDisplayConfigurable('view', TRUE);
+
+    \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('field_parser', 'cep_parser', 'block_content', $field_parser);
+}

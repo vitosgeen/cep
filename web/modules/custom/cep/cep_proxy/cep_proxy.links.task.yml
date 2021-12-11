@@ -1,0 +1,17 @@
+# CEP proxy routing definition
+
+entity.cep_proxy.canonical:
+  route_name: entity.cep_proxy.canonical
+  base_route: entity.cep_proxy.canonical
+  title: 'View'
+
+entity.cep_proxy.edit_form:
+  route_name: entity.cep_proxy.edit_form
+  base_route: entity.cep_proxy.canonical
+  title: 'Edit'
+
+entity.cep_proxy.delete_form:
+  route_name:  entity.cep_proxy.delete_form
+  base_route:  entity.cep_proxy.canonical
+  title: Delete
+  weight: 10

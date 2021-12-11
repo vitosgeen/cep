@@ -1,0 +1,22 @@
+entity.cep_parser.settings:
+  title: Settings
+  route_name: entity.cep_parser.settings
+  base_route: entity.cep_parser.settings
+entity.cep_parser.view:
+  title: View
+  route_name: entity.cep_parser.canonical
+  base_route: entity.cep_parser.canonical
+entity.cep_parser.edit_form:
+  title: Edit
+  route_name: entity.cep_parser.edit_form
+  base_route: entity.cep_parser.canonical
+entity.cep_parser.delete_form:
+  title: Delete
+  route_name: entity.cep_parser.delete_form
+  base_route: entity.cep_parser.canonical
+  weight: 10
+entity.cep_parser.collection:
+  title: cep_parser
+  route_name: entity.cep_parser.collection
+  base_route: system.admin_content
+  weight: 10

@@ -1,0 +1,15 @@
+cep_query.cep_query_type.*:
+  type: config_entity
+  label: 'Cep query type config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    tquery:
+      type: string
+      label: 'Type query'
+    uuid:
+      type: string

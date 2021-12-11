@@ -1,0 +1,20 @@
+add cep query entities:
+  title: 'Create new Cep query entities'
+
+administer cep query entities:
+  title: 'Administer Cep query entities'
+  description: 'Allow to access the administration form to configure Cep query entities.'
+  restrict access: true
+
+delete cep query entities:
+  title: 'Delete Cep query entities'
+
+edit cep query entities:
+  title: 'Edit Cep query entities'
+
+view published cep query entities:
+  title: 'View published Cep query entities'
+
+view unpublished cep query entities:
+  title: 'View unpublished Cep query entities'
+

@@ -1,0 +1,25 @@
+entity.cep_parser_item.settings:
+  title: Cep Parser Item
+  description: Configure a cep_parser_item entity type
+  route_name:  entity.cep_parser_item.settings
+  parent: system.admin_structure
+entity.cep_parser_item.collection:
+  title: Cep Parser Items
+  description: List of cep_parser_items
+  route_name: entity.cep_parser_item.collection
+  parent: system.admin_content
+entity.cep_parser_item.create:
+  title: Create
+  route_name: entity.cep_parser_item.create
+  weight: 0
+  parent: system.admin_content
+entity.cep_parser_item.process:
+  title: Process
+  route_name: entity.cep_parser_item.process
+  weight: 0
+  parent: system.admin_content
+entity.cep_parser_item.retrieving:
+  title: Retrieving
+  route_name: entity.cep_parser_item.retrieving
+  weight: 0
+  parent: system.admin_content

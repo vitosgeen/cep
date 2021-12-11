@@ -1,0 +1,17 @@
+
+# Cep query menu items definition
+entity.cep_query.collection:
+  title: 'Cep query list'
+  route_name: entity.cep_query.collection
+  description: 'List Cep query entities'
+  parent: system.admin_structure
+  weight: 100
+
+
+# Cep query type menu items definition
+entity.cep_query_type.collection:
+  title: 'Cep query type'
+  route_name: entity.cep_query_type.collection
+  description: 'List Cep query type (bundles)'
+  parent: system.admin_structure
+  weight: 99

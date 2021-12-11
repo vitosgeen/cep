@@ -1,0 +1,5 @@
+cep_parser_item.add_form:
+  route_name: entity.cep_parser_item.add_form
+  title: 'Add cep_parser_item'
+  appears_on:
+    - entity.cep_parser_item.collection

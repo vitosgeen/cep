@@ -1,0 +1,5 @@
+administer cep_parser_item:
+  title: 'Administer Cep Parser Item settings'
+  restrict access: true
+access cep_parser_item overview:
+  title: 'Access Cep Parser Item overview page'

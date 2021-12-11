@@ -1,0 +1,5 @@
+name: 'CEP Proxy'
+type: module
+core_version_requirement: ^8.8.0 || ^9.0
+description: 'Retrieve list ip from external sources and provides access to ip'
+package: 'CEP'
