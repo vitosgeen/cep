@@ -35,9 +35,18 @@ class CepQueryServiceJobCurl {
     $this->cepProxyCookiePrepareDirectory();
     $this->cepProxyPrepareCacheDirectory();
     file_put_contents(self::CACHE_COOK_FILE, '');
+    chmod(self::CACHE_COOK_FILE, 0777);
     curl_setopt($ch, CURLOPT_URL, $url);
     if (!empty($proxy)) {
       curl_setopt($ch, CURLOPT_PROXY, $proxy);
+    }
+    if (!is_file('public://cep_proxy_get_html_curl_error.log')) {
+      file_put_contents('public://cep_proxy_get_html_curl_error.log', "");
+      chmod('public://cep_proxy_get_html_curl_error.log', 0777);
+    }
+    if (!is_file('public://cep_proxy_get_html_curl.log')) {
+      file_put_contents('public://cep_proxy_get_html_curl.log', "");
+      chmod('public://cep_proxy_get_html_curl.log', 0777);
     }
     curl_setopt($ch, CURLOPT_HEADER, 1);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -64,6 +73,7 @@ class CepQueryServiceJobCurl {
     curl_close($ch);
 
     file_put_contents('public://cep_proxy_get_html_curl.log', $proxy . ';' . md5($url) . ';' . strlen($html) . ';' . date("Y-m-d H:i:s") . " \n", FILE_APPEND | LOCK_EX);
+    
     return $html;
 
   }
@@ -75,6 +85,7 @@ class CepQueryServiceJobCurl {
     $cookie_uri = self::CACHE_COOK_DIR;
     if (!is_dir(self::CACHE_COOK_DIR)) {
       \Drupal::service('file_system')->prepareDirectory($cookie_uri, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+      chmod($cookie_uri, 0777);
     }
   }
 
@@ -85,6 +96,7 @@ class CepQueryServiceJobCurl {
     $cache_uri_dir = self::CACHE_URI;
     if (!is_dir($cache_uri_dir)) {
       \Drupal::service('file_system')->prepareDirectory($cache_uri_dir, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+      chmod($cache_uri_dir, 0777);
     }
   }
 

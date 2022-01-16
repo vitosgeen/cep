@@ -229,4 +229,14 @@ class CepParserItemService {
     $parser->save();
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function setStatusErrorParserItem($id, $error = 0) {
+    $entity = \Drupal::entityTypeManager()->getStorage(CepParserItem::TYPE_ENTITY);
+    $parser = $entity->load($id);
+    $parser->field_error_status->value = $error;
+    $parser->save();
+  }
+
 }

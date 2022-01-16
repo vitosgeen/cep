@@ -5,6 +5,7 @@ namespace Drupal\cep_parser\Services;
 use voku\helper\HtmlDomParser;
 use Drupal\cep_query\Entity\CepQuery;
 use Drupal\cep_parser\Entity\CepParser;
+use Drupal\cep_parser_item\Entity\CepParserItem;
 
 /**
  * @file
@@ -37,7 +38,9 @@ class CepParserService {
     if (!empty($parserSelectors[CepParser::SELECTOR_ENTITIES_LIST])) {
       $serviceQueryJob = \Drupal::service('cep_query.cep_query_service_job');
       $content = $serviceQueryJob->cepQueryGetCacheHtml($completedQuery->file_data_name->value);
-
+      if (empty($content)) {
+        return FALSE;
+      }
       $html = HtmlDomParser::str_get_html($content);
       $parserSelectorsList = $parserSelectors[CepParser::SELECTOR_ENTITIES_LIST];
       $parserSelectorsData = [];
@@ -71,8 +74,27 @@ class CepParserService {
           $result[] = $resultItem;
         }
       }
+      $this->validateResultDataHtml($result, $parserSelectors, $html);
+      // selector_validate_page
     }
     return $result;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  private function validateResultDataHtml(&$result, $parserSelectors, $html) {
+    if (empty($parserSelectors['selector_validate_page'])) {
+      return FALSE;
+    }
+    $elementValidate = $html->findOne($parserSelectors['selector_validate_page']);
+    $validStr = trim($elementValidate->innertext);
+    if (strlen($validStr) != 0) {
+      $result["ERROR"] = CepParserItem::ERROR_EMPTY_DATA;
+    }
+    else {
+      $result["ERROR"] = CepParserItem::ERROR_NOT_VALID_PAGE;
+    }
   }
 
   /**

@@ -44,13 +44,73 @@ class CepQueryServiceJob {
    * {@inheritdoc}
    */
   public function startServiceJob($proxy = FALSE) {
+    if ($proxy) {
+      $queryEntity = $this->startServiceJobWithProxy($proxy);
+    }
+    else {
+      $queryEntity = $this->startServiceJobWP();
+    }
+
+    return $queryEntity;
+  }
+
+  /**
+   * JOB without proxy.
+   */
+  public function startServiceJobWP() {
     // Get url for job.
     $queryEntity = \Drupal::service('cep_query.cep_query_service')->getQuery();
     if (empty($queryEntity)) {
       \Drupal::logger('cep_query')->info("Service has not free query. All queries completed!");
       return FALSE;
     }
+    
+    // \Drupal::service('cep_query.cep_query_service')->setJobStatusQuery($queryEntity->id->value, CepQuery::BUSY);
 
+    $html = $this->cepQueryGetCacheHtmlByUrl($queryEntity->url->value);
+    if ($html) {
+      \Drupal::logger('cep_query')->info("{$queryEntity->id->value} COMPLETED from cache " . strlen($html));
+      \Drupal::service('cep_query.cep_query_service')->setJobStatusQuery($queryEntity->id->value, CepQuery::COMPLETED);
+      $queryEntity->job_status->value = CepQuery::COMPLETED;
+      $queryEntity->file_data_name->value = $this->cepQueryGetHashByUrl($queryEntity->url->value);
+      $queryEntity->save();
+      return $queryEntity;
+    }
+    // \Drupal::service('cep_query.cep_query_service')->setJobStatusQuery($queryEntity->id->value, CepQuery::PERFORMING);
+    try {
+      $html = $this->retrieveDataForServiceJob($queryEntity->url->value, "");
+      // $html = \Drupal::service('cep_query.cep_query_service_job_curl')->retrieveData($queryEntity->url->value, $ip);
+    }
+    catch (\Throwable $th) {
+      \Drupal::logger('cep_query')->alert($th->getMessage() . "\n " . $th->getFile() . " " . $th->getLine() . "\n " . $th->getTraceAsString());
+    }
+    if (strlen($html) > 100) {
+      \Drupal::logger('cep_query')->info("{$queryEntity->id->value} COMPLETED " . strlen($html));
+      \Drupal::service('cep_query.cep_query_service')->setJobStatusQuery($queryEntity->id->value, CepQuery::COMPLETED);
+      $queryEntity->job_status->value = CepQuery::COMPLETED;
+      $queryEntity->file_data_name->value = $this->cepQueryGetHashByUrl($queryEntity->url->value);
+      $queryEntity->save();
+    }
+    elseif (strlen($html) < 100) {
+      \Drupal::service('cep_query.cep_query_service')->setJobStatusQuery($queryEntity->id->value, CepQuery::FREE);
+    }
+    elseif (strlen($html) == 0) {
+      \Drupal::service('cep_query.cep_query_service')->setJobStatusQuery($queryEntity->id->value, CepQuery::FREE);
+    }
+
+    return $queryEntity;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function startServiceJobWithProxy($proxy = FALSE) {
+    // Get url for job.
+    $queryEntity = \Drupal::service('cep_query.cep_query_service')->getQuery();
+    if (empty($queryEntity)) {
+      \Drupal::logger('cep_query')->info("Service has not free query. All queries completed!");
+      return FALSE;
+    }
     \Drupal::service('cep_query.cep_query_service')->setJobStatusQuery($queryEntity->id->value, CepQuery::BUSY);
 
     $html = $this->cepQueryGetCacheHtmlByUrl($queryEntity->url->value);
@@ -121,7 +181,10 @@ class CepQueryServiceJob {
     $html = $this->cepQueryGetCacheHtml($hash_filename_uri);
     if (!$html) {
       $html = \Drupal::service('cep_query.cep_query_service_job_curl')->retrieveData($url, $ip);
-      $this->cepQuerySetCacheHtml($hash_filename_uri, $html);
+      $isSave = $this->cepQuerySetCacheHtml($hash_filename_uri, $html);
+      if (!$isSave) {
+        return FALSE;
+      }
     }
     return $html;
   }

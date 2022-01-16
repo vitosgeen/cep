@@ -62,6 +62,11 @@ class CepParserItem extends ContentEntityBase implements CepParserItemInterface 
   const STATUS_COMPLETED = 2;
   const STATUS_FAILED = 3;
 
+  const ERROR_NONE = 0;
+  const ERROR_EMPTY_DATA = 1;
+  const ERROR_NOT_VALID_DATA = 2;
+  const ERROR_NOT_VALID_PAGE = 3;
+
   /**
    * {@inheritdoc}
    *
@@ -275,6 +280,25 @@ class CepParserItem extends ContentEntityBase implements CepParserItemInterface 
       ])
       ->setDisplayConfigurable('view', TRUE)
       ->setDisplayConfigurable('form', TRUE);
+    
+    $fields['field_error_status'] = BaseFieldDefinition::create('list_integer')
+      ->setLabel(t('Error status'))
+      ->setDescription(t('Error status data'))
+      ->setDefaultValue(0)
+      ->setSettings([
+        'allowed_values' => self::getErrorStatus(),
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'visible',
+        'type' => 'list_default',
+        'weight' => 6,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_select',
+        'weight' => 6,
+      ])
+      ->setDisplayConfigurable('view', TRUE)
+      ->setDisplayConfigurable('form', TRUE);
 
     $fields['uid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Author'))
@@ -453,6 +477,26 @@ class CepParserItem extends ContentEntityBase implements CepParserItemInterface 
       self::STATUS_BUSY    => 'BUSY',
       self::STATUS_COMPLETED    => 'COMPLETED',
       self::STATUS_FAILED    => 'FAILED',
+    ];
+
+    if ($status === NULL) {
+      return $data_status;
+    }
+    if (isset($data_status[$status])) {
+      return $data_status[$status];
+    }
+    return FALSE;
+  }
+  
+  /**
+   * {@inheritdoc}
+   */
+  public static function getErrorStatus(int $status = NULL) {
+    $data_status = [
+      self::ERROR_NONE => 'NONE',
+      self::ERROR_EMPTY_DATA    => 'EMTY DATA',
+      self::ERROR_NOT_VALID_DATA    => 'NOT VALID DATA',
+      self::ERROR_NOT_VALID_PAGE    => 'NOT VALID PAGE',
     ];
 
     if ($status === NULL) {

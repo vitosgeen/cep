@@ -225,7 +225,7 @@ class CepParser extends ContentEntityBase implements CepParserInterface {
         'label' => 'above',
         'weight' => 10,
       ])
-      ->setDefaultValue($this->getDefaultSelectorsData())
+      ->setDefaultValue(self::getDefaultSelectorsData())
       ->setDisplayConfigurable('view', TRUE);
 
     $fields['field_parser'] = BaseFieldDefinition::create('entity_reference')
@@ -385,7 +385,7 @@ class CepParser extends ContentEntityBase implements CepParserInterface {
   /**
    * {@inheritdoc}
    */
-  private function getDefaultSelectorsData() {
+  public static function getDefaultSelectorsData() {
     $dataStrSelectors = '{"started_url":"","next_url":"","curent_url":"","how_often":0,"selector_entities_list":' .
       '{"0":"selector_entities_list 0","1":"selector_entities_list 1"},"selector_entity_title":"","selector_entity_link":"",' .
       '"selector_pager":"","selector_pager_item":"","selector_pager_item_condition":"","selector_item":{"0":{"title":{"selector":' .
