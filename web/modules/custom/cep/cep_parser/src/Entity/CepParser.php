@@ -60,6 +60,7 @@ class CepParser extends ContentEntityBase implements CepParserInterface {
   const STATUS_COMPLETED = 3;
   const STATUS_FAILED = 4;
 
+  const KEY_CUSTOM_PARSER_CLASS_NAME = "custom_parser_class_name";
   const SELECTOR_ENTITIES_LIST = "selector_entities_list";
   const SELECTOR_ENTITY_TITLE = "selector_entity_title";
   const SELECTOR_ENTITY_LINK = "selector_entity_link";

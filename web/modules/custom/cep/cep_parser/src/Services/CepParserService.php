@@ -50,23 +50,35 @@ class CepParserService {
       else {
         $parserSelectorsData = $parserSelectorsList;
       }
-      $resultItem = [];
       foreach ($parserSelectorsData as $keyParserData => $valueParserData) {
         $list = $html->find($valueParserData);
         foreach ($list as $item) {
           if (empty($parserSelectors["selector_item"][$keyParserData])) {
             continue;
           }
+          $resultItem = [];
           foreach ($parserSelectors["selector_item"][$keyParserData] as $keyItem => $valItem) {
             if (empty($valItem["extractor_value"])) {
               $ext = $valItem["extractor"];
-              $value = $item->findOne($valItem["selector"])->{$ext};
+              if (!empty($valItem["extractor_method_pre"])) {
+                $method_tmp = $valItem["extractor_method_pre"];
+                $value = $item->{$method_tmp}()->findOne($valItem["selector"])->{$ext};
+              }
+              else {
+                $value = $item->findOne($valItem["selector"])->{$ext};
+              }
               $value = (!empty($valItem["prefix"] && !stristr($value, $valItem["prefix"]))) ? $valItem["prefix"] . $value : $value;
               $resultItem[$keyItem] = $value;
             }
             else {
               $ext = $valItem["extractor"];
-              $value = $item->findOne($valItem["selector"])->{$ext}($valItem["extractor_value"]);
+              if (!empty($valItem["extractor_method_pre"])) {
+                $method_tmp = $valItem["extractor_method_pre"];
+                $value = $item->{$method_tmp}()->findOne($valItem["selector"])->{$ext}($valItem["extractor_value"]);
+              }
+              else {
+                $value = $item->findOne($valItem["selector"])->{$ext}($valItem["extractor_value"]);
+              }
               $value = (!empty($valItem["prefix"] && !stristr($value, $valItem["prefix"]))) ? $valItem["prefix"] . $value : $value;
               $resultItem[$keyItem] = $value;
             }
@@ -74,7 +86,7 @@ class CepParserService {
           $result[] = $resultItem;
         }
       }
-      $this->validateResultDataHtml($result, $parserSelectors, $html);
+      $this->validateResultDataHtml($result, $parserSelectors, $html, $content);
       // selector_validate_page
     }
     return $result;
@@ -83,7 +95,14 @@ class CepParserService {
   /**
    * {@inheritdoc}
    */
-  private function validateResultDataHtml(&$result, $parserSelectors, $html) {
+  private function validateResultDataHtml(&$result, $parserSelectors, $html, $htmlstr) {
+    $e11404 = "HTTP/1.1 404";
+    $e2404 = "HTTP/2 404";
+    if ((strpos($htmlstr, $e11404) != false) || (strpos($htmlstr, $e2404) != false)) {
+      $result["ERROR"] = CepParserItem::ERROR_EMPTY_DATA;
+      \Drupal::logger('cep_parser')->error( "validateResultDataHtml HTML file has error 404" );
+      return FALSE;
+    }
     if (empty($parserSelectors['selector_validate_page'])) {
       return FALSE;
     }

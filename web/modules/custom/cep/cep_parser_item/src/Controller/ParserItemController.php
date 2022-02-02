@@ -58,16 +58,25 @@ class ParserItemController extends ControllerBase {
    */
   public function retrievingContentAction() {
     global $argv;
-    $serviceQueryUrl = \Drupal::service('cep_query.cep_query_service');
-    $queryFree = $serviceQueryUrl->getQuery();
-    $url = "";
-    if ($queryFree) {
-      $serviceQueryJob = \Drupal::service('cep_query.cep_query_service_job');
-      $queryEntity = $serviceQueryJob->startServiceJob();
-      if ($queryEntity) {
-        $url = $queryEntity->url->value;
+    
+    $loop = (!empty($argv[2])) ? $argv[2] : 1;
+    $sleep = (!empty($argv[3])) ? $argv[3] : 10;
+    $urls = [];
+    for ($i = 0; $i < $loop; $i++) {
+      $serviceQueryUrl = \Drupal::service('cep_query.cep_query_service');
+      $queryFree = $serviceQueryUrl->getQuery();
+      $url = "";
+      if ($queryFree) {
+        $serviceQueryJob = \Drupal::service('cep_query.cep_query_service_job');
+        $queryEntity = $serviceQueryJob->startServiceJob(TRUE);
+        if ($queryEntity) {
+          $url = $queryEntity->url->value;
+          $urls[] = $url;
+        }
       }
+      sleep($sleep);
     }
+    $url = join(' ', $urls);
     $msg = ('Retrieving content of cep_query is finished.') . "(" . $url . ") \n";
     if (!empty($argv)) {
       return new JsonResponse([ 'data' => $msg, 'method' => 'GET', 'status' => 200]);
@@ -82,57 +91,69 @@ class ParserItemController extends ControllerBase {
    */
   public function processParser() {
     global $argv;
-    $msg = "";
-    $serviceParser = \Drupal::service('cep_parser.cep_parser_service');
-    $serviceParserItem = \Drupal::service('cep_parser_item.cep_parser_item_service');
-    $serviceQueryUrl = \Drupal::service('cep_query.cep_query_service');
-    $completedQuery = $serviceQueryUrl->getQueryByStatus(CepQuery::COMPLETED);
-    // if (!$completedQuery) {
-    //   $completedQuery = $serviceQueryUrl->getQueryByStatus(CepQuery::FINISHED);
-    // }
-    $parserItem = $serviceParserItem->geParserItemByUrl($completedQuery->url->value);
-    if ($parserItem) {
-      $parserSelectors = $serviceParser->getSelectorsDataParserById($parserItem->field_parser->target_id);
-      $data = $serviceParser->extractOfDataFromContentBySelectors($parserItem, $parserSelectors, $completedQuery);
-      $msg = $completedQuery->url->value;
-      if (isset($data['ERROR']) && $data['ERROR'] == CepParserItem::ERROR_EMPTY_DATA) {
-        $serviceParserItem->setDataParserItem($parserItem->id(), $data);
-        $serviceParserItem->setCompletedParserItem($parserItem->id());
-        $serviceParserItem->setStatusErrorParserItem($parserItem->id(), $data['ERROR']);
-        $serviceQueryUrl->setJobStatusQuery($completedQuery->id(), CepQuery::FINISHED);
-        $statuses = [CepParserItem::STATUS_READY, CepParserItem::STATUS_BUSY];
-        $pItem = $serviceParserItem->geParsersItemByParserIdStatus($parserItem->id(), $statuses);
-        if (!$pItem) {
-          $serviceParser->setCompletedParser($parserItem->field_parser->target_id);
+
+    $loop = (!empty($argv[2])) ? $argv[2] : 1;
+    $sleep = (!empty($argv[3])) ? $argv[3] : 0;
+    $msgs = [];
+    for ($i = 0; $i < $loop; $i++) {
+      $msg = "";
+      $serviceParser = \Drupal::service('cep_parser.cep_parser_service');
+      $serviceParserItem = \Drupal::service('cep_parser_item.cep_parser_item_service');
+      $serviceQueryUrl = \Drupal::service('cep_query.cep_query_service');
+      $completedQuery = $serviceQueryUrl->getQueryByStatus(CepQuery::COMPLETED);
+      $parserItem = FALSE;
+      if ($completedQuery) {
+        // $completedQuery = $serviceQueryUrl->getQueryByStatus(CepQuery::FINISHED);
+        $parserItem = $serviceParserItem->geParserItemByUrl($completedQuery->url->value);
+      }
+      if ($parserItem) {
+        $parserSelectors = $serviceParser->getSelectorsDataParserById($parserItem->field_parser->target_id);
+        $data = $serviceParser->extractOfDataFromContentBySelectors($parserItem, $parserSelectors, $completedQuery);
+        $msg = $completedQuery->url->value;
+        if (isset($data['ERROR']) && $data['ERROR'] == CepParserItem::ERROR_EMPTY_DATA) {
+          \Drupal::logger('cep_parser_item')->error($parserItem->id() . " parser item processParser HTML has not useful data" );
+          $serviceParserItem->setDataParserItem($parserItem->id(), $data);
+          $serviceParserItem->setCompletedParserItem($parserItem->id());
+          $serviceParserItem->setStatusErrorParserItem($parserItem->id(), $data['ERROR']);
+          $serviceQueryUrl->setJobStatusQuery($completedQuery->id(), CepQuery::FINISHED);
+          $statuses = [CepParserItem::STATUS_READY, CepParserItem::STATUS_BUSY];
+          $pItem = $serviceParserItem->geParsersItemByParserIdStatus($parserItem->id(), $statuses);
+          if (!$pItem) {
+            $serviceParser->setCompletedParser($parserItem->field_parser->target_id);
+          }
+        }
+        elseif (isset($data['ERROR']) && $data['ERROR'] > CepParserItem::ERROR_EMPTY_DATA) {
+          \Drupal::logger('cep_parser_item')->error($parserItem->id() . " parser item processParser HTML has not useful data. ERROR: " . $data['ERROR'] );
+          $serviceParserItem->setDataParserItem($parserItem->id(), $data);
+          $serviceParserItem->setCompletedParserItem($parserItem->id());
+          $serviceParserItem->setStatusErrorParserItem($parserItem->id(), $data['ERROR']);
+          $serviceQueryUrl->setJobStatusQuery($completedQuery->id(), CepQuery::FAIL);
+          $statuses = [CepParserItem::STATUS_READY, CepParserItem::STATUS_BUSY];
+          $pItem = $serviceParserItem->geParsersItemByParserIdStatus($parserItem->id(), $statuses);
+          if (!$pItem) {
+            $serviceParser->setCompletedParser($parserItem->field_parser->target_id);
+          }
+        }
+        elseif ($data) {
+          $serviceParserItem->setDataParserItem($parserItem->id(), $data);
+          $serviceParserItem->setCompletedParserItem($parserItem->id());
+          $serviceQueryUrl->setJobStatusQuery($completedQuery->id(), CepQuery::FINISHED);
+          $statuses = [CepParserItem::STATUS_READY, CepParserItem::STATUS_BUSY];
+          $pItem = $serviceParserItem->geParsersItemByParserIdStatus($parserItem->id(), $statuses);
+          if (!$pItem) {
+            $serviceParser->setCompletedParser($parserItem->field_parser->target_id);
+          }
+        }
+        else {
+          $serviceQueryUrl->setJobStatusQuery($completedQuery->id(), CepQuery::FREE);
+          $msg = $completedQuery->id() . " Empty Data ParserItemController processParser";
+          \Drupal::logger('cep_parser')->error($msg);
         }
       }
-      elseif (isset($data['ERROR']) && $data['ERROR'] > CepParserItem::ERROR_EMPTY_DATA) {
-        $serviceParserItem->setDataParserItem($parserItem->id(), $data);
-        $serviceParserItem->setCompletedParserItem($parserItem->id());
-        $serviceParserItem->setStatusErrorParserItem($parserItem->id(), $data['ERROR']);
-        $serviceQueryUrl->setJobStatusQuery($completedQuery->id(), CepQuery::FAIL);
-        $statuses = [CepParserItem::STATUS_READY, CepParserItem::STATUS_BUSY];
-        $pItem = $serviceParserItem->geParsersItemByParserIdStatus($parserItem->id(), $statuses);
-        if (!$pItem) {
-          $serviceParser->setCompletedParser($parserItem->field_parser->target_id);
-        }
-      }
-      elseif ($data) {
-        $serviceParserItem->setDataParserItem($parserItem->id(), $data);
-        $serviceParserItem->setCompletedParserItem($parserItem->id());
-        $serviceQueryUrl->setJobStatusQuery($completedQuery->id(), CepQuery::FINISHED);
-        $statuses = [CepParserItem::STATUS_READY, CepParserItem::STATUS_BUSY];
-        $pItem = $serviceParserItem->geParsersItemByParserIdStatus($parserItem->id(), $statuses);
-        if (!$pItem) {
-          $serviceParser->setCompletedParser($parserItem->field_parser->target_id);
-        }
-      }
-      else {
-        $serviceQueryUrl->setJobStatusQuery($completedQuery->id(), CepQuery::FREE);
-        $msg = $completedQuery->id() . " Empty Data ParserItemController processParser";
-        \Drupal::logger('cep_parser')->error($msg);
-      }
+      $msgs[] = $msg;
+      sleep($sleep);
     }
+    $msg = join(' ', $msgs);
     if (!empty($argv)) {
       $response = ['data' => $msg, 'method' => 'GET', 'status' => 200];
       return new JsonResponse($response);

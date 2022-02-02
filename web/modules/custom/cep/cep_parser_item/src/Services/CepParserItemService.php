@@ -204,7 +204,6 @@ class CepParserItemService {
     $serviceParserItemJob = \Drupal::service('cep_parser_item.cep_parser_item_service');
     // $entity = \Drupal::entityTypeManager()->getStorage(CepParserItem::TYPE_ENTITY);
     $entity = CepParserItem::create();
-    $hash = md5($url);
     $parserItem = $entity->getParserItemsByParserIdStatus($parserId, $status);
     return $parserItem;
   }

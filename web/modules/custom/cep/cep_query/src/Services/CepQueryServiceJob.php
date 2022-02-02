@@ -127,8 +127,10 @@ class CepQueryServiceJob {
       // Get free proxy ip.
       $ip = \Drupal::service('cep_proxy.cep_proxy_service')->getFreeProxy($queryEntity->proxy_type->value);
       if (empty($ip)) {
-        \Drupal::logger('cep_query')->info("Service has not free ip");
+        \Drupal::logger('cep_proxy')->info("Service has not free ip");
         \Drupal::service('cep_query.cep_query_service')->setJobStatusQuery($queryEntity->id->value, CepQuery::FREE);
+        \Drupal::service('cep_proxy.cep_proxy_service')->clearTypesProxiesIps();
+        \Drupal::service('cep_proxy.cep_proxy_service')->updateTypesProxiesIps();
         return FALSE;
       }
     }
@@ -191,7 +193,7 @@ class CepQueryServiceJob {
 
   public function cepQuerySetCacheHtml($hash_filename_uri, $htmlStr) {
     $filePath = self::CACHE_URI . $hash_filename_uri;
-    if (!is_file($filePath)) {
+    if (!is_file($filePath) && strlen($htmlStr) > 100) {
       try {
         file_put_contents($filePath, $htmlStr);
       }

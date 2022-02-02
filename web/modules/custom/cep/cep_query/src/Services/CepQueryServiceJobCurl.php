@@ -64,15 +64,21 @@ class CepQueryServiceJobCurl {
       switch ($http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
         case 200:
           break;
+        case 404:
+          file_put_contents('public://cep_proxy_get_html_curl.log', $proxy . ';' . md5($url) . ';HTTP_CODE: ' . $http_code . ';' . strlen($html) . ';' . date("Y-m-d H:i:s") . " \n", FILE_APPEND | LOCK_EX);
+          file_put_contents('public://cep_proxy_get_html_curl_error.log', $proxy . ';' . md5($url) . ';HTTP_CODE: ' . $http_code . ';' . strlen($html) . ';' . date("Y-m-d H:i:s") . ';' . $url);
+          return $html;
+          break;
 
         default:
-          file_put_contents('public://cep_proxy_get_html_curl_error.log', $proxy . ';' . md5($url) . ';' . strlen($html) . ';' . date("Y-m-d H:i:s") . ';' . $url);
-          return '';
+          file_put_contents('public://cep_proxy_get_html_curl_error.log', $proxy . ';' . md5($url) . ';HTTP_CODE: ' . $http_code . ';' . strlen($html) . ';' . date("Y-m-d H:i:s") . ';' . $url);
+          return "";
       }
     }
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
-    file_put_contents('public://cep_proxy_get_html_curl.log', $proxy . ';' . md5($url) . ';' . strlen($html) . ';' . date("Y-m-d H:i:s") . " \n", FILE_APPEND | LOCK_EX);
+    file_put_contents('public://cep_proxy_get_html_curl.log', $proxy . ';' . md5($url) . ';HTTP_CODE: ' . $http_code . ';' . strlen($html) . ';' . date("Y-m-d H:i:s") . " \n", FILE_APPEND | LOCK_EX);
     
     return $html;
 

@@ -203,7 +203,7 @@ class CepQuery extends ContentEntityBase implements CepQueryInterface {
       ->setLabel(t('Name'))
       ->setDescription(t('The name of the Cep query entity.'))
       ->setSettings([
-        'max_length' => 50,
+        'max_length' => 255,
         'text_processing' => 0,
       ])
       ->setDefaultValue('')
